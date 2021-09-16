@@ -78,9 +78,13 @@
 		# Final_Combined_ATAC_440_200_200.txt is supplied
 
 
-		# next step is to create the matrix used for prediction using the motifs called on each ATAC-seq fragment
-		ATAC_occurence <- read.csv('Final_Combined_ATAC_440_200_200.txt', sep = "\t", head = T)
+		# next step is to create the matrix used for prediction using the motifs called on each ATAC-seq fragment - file is a subset of the first 8000 ATAC-seq fragments
+		ATAC_occurence1 <- read.csv('Final_Combined_ATAC_440_200_200_subset1.txt.gz', sep = "\t", head = T)
+        ATAC_occurence2 <- read.csv('Final_Combined_ATAC_440_200_200_subset2.txt.gz', sep = "\t", head = T)
+        ATAC_occurence3 <- read.csv('Final_Combined_ATAC_440_200_200_subset3.txt.gz', sep = "\t", head = T)
 
+            ATAC_occurence <- rbind(ATAC_occurence1, ATAC_occurence2)
+            ATAC_occurence <- rbind(ATAC_occurence, ATAC_occurence3)
 			ATAC_occurence <- ATAC_occurence[order(ATAC_occurence[,1]),]
 			colnames(ATAC_occurence) <- toupper(colnames(ATAC_occurence))
 			ATAC_occurence[is.na(ATAC_occurence)] <- 0
@@ -104,7 +108,8 @@
 		
 		
 		#add the numer of occurences to the Final_Combined_ATAC GR object
-		Final_Combined_ATAC$DAT_where <- DAT_where
+		Final_Combined_ATAC <- Final_Combined_ATAC[1:8000,]
+        Final_Combined_ATAC$DAT_where <- DAT_where
 		Final_Combined_ATAC$NUM <- DAT_list
 
 
@@ -286,7 +291,7 @@
 							for(i in 1:5){
 							mix1a <- iWant[which(iWant != POSITIVE)][i]
 							mix1b <- hmm[which(hmm$Feature ==mix1a),]
-							mix1c[[i]] <- mix1b[sample(length(mix1b[,1]),dim(yes_hmm)[1]*0.2),]
+							mix1c[[i]] <- mix1b[sample(length(mix1b[,1]),(dim(yes_hmm)[1]*0.2)),]
 						}
 		
 					hmm <- do.call("rbind",mix1c)
@@ -427,7 +432,7 @@
 		SCORES_in <- lapply(SCORES,function(x){load(x)
 			SCORES_in <- AUCO})
 
-		png(paste0(graphs.dir,"ML_Scores_AUC.png"), width = 2.5, height = 10, units = 'in', res = 600)
+		png(paste0("./",graphs.dir,"ML_Scores_AUC.png"), width = 2.5, height = 10, units = 'in', res = 600)
 		barplot(c(as.numeric(SCORES_in[[1]][1]),
 				as.numeric(SCORES_in[[2]][2]),
 				as.numeric(SCORES_in[[3]][3]),
@@ -580,7 +585,8 @@
 						shap_data_sub$predicted <- PREDICTION$response
 						shap_data_sub$actual <- PREDICTION$truth
 						shap_data_sub$InteractionRow <- row.names(PRED$data)
-
+                   
+                    final_df_SHAP <- test_data
 					final_df_SHAP$iteration <- i
 					final_df_SHAP_F[[i]] <- final_df_SHAP
 					shap_data_sub$iteration <- i
