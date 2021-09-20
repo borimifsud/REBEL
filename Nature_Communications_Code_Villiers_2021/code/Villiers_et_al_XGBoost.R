@@ -108,8 +108,7 @@
 		
 		
 		#add the numer of occurences to the Final_Combined_ATAC GR object
-		Final_Combined_ATAC <- Final_Combined_ATAC[1:8000,]
-        Final_Combined_ATAC$DAT_where <- DAT_where
+    Final_Combined_ATAC$DAT_where <- DAT_where
 		Final_Combined_ATAC$NUM <- DAT_list
 
 
@@ -431,8 +430,9 @@
 		SCORES <- list.files(pattern="_AUC_Final_Model_date_",full.names=T)
 		SCORES_in <- lapply(SCORES,function(x){load(x)
 			SCORES_in <- AUCO})
+    
 
-		png(paste0("./",graphs.dir,"ML_Scores_AUC.png"), width = 2.5, height = 10, units = 'in', res = 600)
+		png(paste0(graphs.dir,"ML_Scores_AUC.png"), width = 2.5, height = 10, units = 'in', res = 600)
 		barplot(c(as.numeric(SCORES_in[[1]][1]),
 				as.numeric(SCORES_in[[2]][2]),
 				as.numeric(SCORES_in[[3]][3]),
@@ -440,6 +440,7 @@
 				as.numeric(SCORES_in[[5]][5]),
 				as.numeric(SCORES_in[[6]][6])),col=c("pink","indianred","purple","blue","lightseagreen","green"),ylim=c(0,1),cex.axis=2)
 		dev.off()
+		
 		
 		#the above plot can be compared to the "ML_Scores_AUC_Expected.png" plot in the graphs directory
 
